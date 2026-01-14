@@ -3,23 +3,23 @@ from torch import nn
 import numpy as np
 
 class RegionAggregator(nn.Module):
-    def __init__(self, func_area, embed_dim, aggregation_type="prototype-attention"):
+    def __init__(self, func_area, encoder_dim, aggregation_type="prototype-attention"):
         super().__init__()
         self.func_area = func_area
         self.aggregation_type = aggregation_type
-        self.embed_dim = embed_dim
+        self.encoder_dim = encoder_dim
         self.region_nodes = len(func_area)
         self.raw_nodes = sum(len(g) for g in func_area)
 
         if aggregation_type == "prototype-attention":
             self.region_prototypes = nn.Parameter(
-                torch.randn(self.region_nodes, embed_dim)
+                torch.randn(self.region_nodes, encoder_dim)
             )
 
         elif aggregation_type == "self-attention":
-            self.W_q = nn.Linear(embed_dim, embed_dim, bias=False)
-            self.W_k = nn.Linear(embed_dim, embed_dim, bias=False)
-            self.W_v = nn.Linear(embed_dim, embed_dim, bias=False)
+            self.W_q = nn.Linear(encoder_dim, encoder_dim, bias=False)
+            self.W_k = nn.Linear(encoder_dim, encoder_dim, bias=False)
+            self.W_v = nn.Linear(encoder_dim, encoder_dim, bias=False)
 
     def forward(self, data: torch.Tensor):
         B, total_nodes, C = data.shape

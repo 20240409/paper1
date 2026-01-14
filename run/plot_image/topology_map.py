@@ -10,6 +10,7 @@ from model.stage_2 import Stage2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(torch.cuda.is_available())
+
 def fit(
         func_area: Optional[list] = None,
         batch_size: int = 128,
@@ -49,7 +50,6 @@ def fit(
         
         for cls in class_data:
             print(f"Class {cls} data shape: {class_data[cls].shape}")
-
 
         stage2 = Stage2(channel_num=17 + regions, attn_mask=attn_mask, pe_coordination=pe_coordination,
                             encoder_dim=encoder_dim, regions=regions,

@@ -4,6 +4,9 @@ from network.encoder import Encoder
 import numpy as np
 from torch import nn
 
+"""
+The following code shows the framework of the second stage in our training method
+"""
 class Stage2(nn.Module):
     def __init__(self,
                  channel_num=21,
@@ -17,20 +20,12 @@ class Stage2(nn.Module):
                  pe_coordination: Optional[np.ndarray] = None,
                  num_class=3):
         super().__init__()
-        self.channel_num = channel_num
-        self.attn_mask = attn_mask
-        self.pe_coordination = pe_coordination
-        self.depth = depth
-        self.encoder_dim = encoder_dim
-        self.regions = regions
-        self.num_class = num_class
-
         self.encoder = Encoder(pe_coordination=pe_coordination, attn_mask=attn_mask, encoder_dim=encoder_dim,
                                depth=depth, num_heads=num_heads, regions=regions, channel_num=channel_num,
                                is_reconstruction=False, func_area=func_area, aggregation_type=aggregation_type)
 
-        self.fc_norm1 = nn.BatchNorm1d(self.encoder_dim * (self.regions + 1))
-        self.fc_out1 = nn.Linear(self.encoder_dim * (self.regions + 1), 64)
+        self.fc_norm1 = nn.BatchNorm1d(encoder_dim * (regions + 1))
+        self.fc_out1 = nn.Linear(encoder_dim * (regions + 1), 64)
         self.fc_norm2 = nn.BatchNorm1d(64)
         self.fc_out2 = nn.Linear(64, num_class)
 

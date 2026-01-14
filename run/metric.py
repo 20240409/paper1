@@ -13,11 +13,9 @@ from model.stage_2 import Stage2
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(torch.cuda.is_available())
 
-
 def safe_save(state_dict, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     torch.save(state_dict, path)
-
 
 def fit(
         func_area: list = None,
@@ -165,7 +163,6 @@ def fit(
     print(f"\n acc={avg_acc:.4f}, prec={avg_prec:.4f}, rec={avg_rec:.4f}, f1={avg_f1:.4f}\n")
 
     return avg_acc, avg_prec, avg_rec, avg_f1
-
 
 def run(
         mask_type="node",

@@ -73,7 +73,6 @@ def fit(
     return data_yuanben,data_raw, data_pred, label_true
 
 def plot_tsne_comparison(data_yuanben,data_raw, data_pred, labels):
-
     data_yuanben_flat = data_yuanben.reshape(data_yuanben.shape[0], -1)
     data_raw_flat = data_raw.reshape(data_raw.shape[0], -1)
     n_samples = min(5000, len(data_raw_flat))
@@ -115,7 +114,6 @@ def plot_tsne_comparison(data_yuanben,data_raw, data_pred, labels):
 
     plt.tight_layout()
     plt.show()
-
 
 if __name__ == "__main__":
     func_area =[[0, 2, 4], [1, 3, 5], [6, 8], [7, 10], [9, 12, 15], [11, 14], [13, 16]]

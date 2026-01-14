@@ -3,6 +3,10 @@ import glob
 import numpy as np
 import scipy.io as sio
 
+"""
+This script is used to directly load and utilize the extracted differential entropy (DE) features of the five
+frequency bands from the SEED-VIG dataset.
+"""
 if __name__ == "__main__":
     save_path = './data/'
 

@@ -5,15 +5,19 @@ import scipy.io as sio
 from scipy.stats import rankdata
 from torch.utils.data import Dataset
 
+"""
+This dataset class initializes three distinct datasets, namely stage1, stage2, and test, designed for the first-stage, second-stage, and testing, respectively.
+This class automatically aggregates the raw nodes into region-level nodes using the default mean aggregation.
+"""
 class SEEDVIG(Dataset):
     def __init__(
             self,
-            prefix: str = "./data/",
+            prefix: str = "./data/", # data storage path
             normalize: Optional[str] = None,
             subject_idx: int = 1,
-            dataset_name: Optional[str] = None,
-            mask_type: Optional[str] = None,
-            rand_list: Optional[list] = None,
+            dataset_name: Optional[str] = None, # dataset_name: stage1 or stage2 or test
+            mask_type: Optional[str] = None, # masking methods: node or band or random
+            rand_list: Optional[list] = None, # shuffling order of samples
             func_areas: Optional[list] = None
     ):
         super().__init__()
@@ -55,8 +59,8 @@ class SEEDVIG(Dataset):
 
         region_data = self.build_region_nodes(self.data, self.func_areas)
         region_data = region_data.transpose([0, 2, 1, 3])
+
         self.data = self.data.transpose([0, 2, 1, 3])
-        
         if mask_type:
             self.data = self.node_mask(self.data, mask_type=self.mask_type)
 
@@ -151,7 +155,6 @@ class SEEDVIG(Dataset):
 
     
     def _normalize(self, method='minmax'):
-
         if method == 'minmax':
             for i in range(self.data.shape[0]):
                 for j in range(5):
@@ -173,7 +176,6 @@ class SEEDVIG(Dataset):
         return np.array(coordination)
 
     def get_coordination(self):
-
         func_areas = self.func_areas
         coordination = self.coordination()
 
@@ -204,12 +206,12 @@ class SEEDVIG(Dataset):
 
     def __getitem__(self, idx):
         x = torch.tensor(self.data[idx], dtype=torch.float)
-
         
         if self.dataset_name == "stage1":
             y_1 = torch.tensor(self.label_2[idx], dtype=torch.long)
             y_2 = torch.tensor(self.label_1[idx], dtype=torch.float)
             y=[y_1, y_2]
+
         else:
             y = torch.tensor(self.label[idx], dtype=torch.long)
 
@@ -234,4 +236,3 @@ def area_gather(coordination, areas):
         rank = rankdata(arr, method="dense") - 1
         res[i] = rank
     return res
-

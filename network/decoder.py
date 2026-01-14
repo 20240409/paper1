@@ -20,18 +20,16 @@ class Decoder(nn.Module):
     ):
         super().__init__()
         self.origin_channel = origin_channel
-        self.embed_dim = encoder_dim
+        self.encoder_dim = encoder_dim
         self.pe_coordination = pe_coordination
-        self.regions = regions
-        self.channel_num = channel_num
 
         self.attn_mask = attn_mask
-        self.pos_embed = torch.zeros(self.channel_num, encoder_dim, requires_grad=False)
+        self.pos_embed = torch.zeros(channel_num, encoder_dim, requires_grad=False)
+        self.liner1 = nn.Linear(channel_num, origin_channel)
+        self.liner2 = nn.Linear(encoder_dim, 5)
 
         norm_layer = nn.LayerNorm
 
-        self.liner1 = nn.Linear(self.channel_num, origin_channel)
-        self.liner2 = nn.Linear(encoder_dim, 5)
         self.blocks = nn.ModuleList(
             Layer(encoder_dim, num_heads, mlp_ratio=mlp_ratio,
                   norm_layer=norm_layer) for _ in range(depth))
@@ -42,7 +40,7 @@ class Decoder(nn.Module):
         self.initialize_weights()
 
     def initialize_weights(self):
-        pos_embed = two_dimension_pos_embed(self.embed_dim, self.pe_coordination, cls_token=False)
+        pos_embed = two_dimension_pos_embed(self.encoder_dim, self.pe_coordination, cls_token=False)
         self.pos_embed.data.copy_(torch.from_numpy(pos_embed))
 
         self.apply(self._init_weights)

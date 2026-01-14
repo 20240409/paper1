@@ -22,10 +22,7 @@ class Encoder(nn.Module):
         is_reconstruction:Optional[bool]=True
     ):
         super().__init__()
-
-        self.channel_num = channel_num
-        self.embed_dim = encoder_dim
-        self.in_chans = in_chans
+        self.encoder_dim = encoder_dim
         self.regions=regions
         self.pe_coordination =pe_coordination
         self.is_reconstruction=is_reconstruction
@@ -33,9 +30,9 @@ class Encoder(nn.Module):
         self.patch_embed = nn.Linear(in_chans, encoder_dim, bias=True)
 
         if is_reconstruction:
-            self.pos_embed = torch.zeros(self.channel_num , encoder_dim,requires_grad=True)
+            self.pos_embed = torch.zeros(channel_num , encoder_dim,requires_grad=True)
         else:
-            self.pos_embed = torch.zeros(self.channel_num + 1, encoder_dim,requires_grad=True)
+            self.pos_embed = torch.zeros(channel_num + 1, encoder_dim,requires_grad=True)
         norm_layer = nn.LayerNorm
         self.cls_token = nn.parameter.Parameter(torch.zeros(1,1,encoder_dim),requires_grad=True)
         torch.nn.init.normal_(self.cls_token)
@@ -44,13 +41,13 @@ class Encoder(nn.Module):
             Layer(encoder_dim,num_heads,mlp_ratio=mlp_ratio,
                 norm_layer=norm_layer) for _ in range(depth))
 
-        self.aggregation_method = RegionAggregator(func_area=func_area,aggregation_type=aggregation_type,embed_dim=5)
+        self.aggregation_method = RegionAggregator(func_area=func_area,aggregation_type=aggregation_type,encoder_dim=5)
         self.norm = norm_layer(encoder_dim)
         self.fc_norm = norm_layer(encoder_dim)
         self.initialize_weights()
 
     def initialize_weights(self):
-        pos_embed = two_dimension_pos_embed(self.embed_dim, self.pe_coordination,cls_token=not self.is_reconstruction)
+        pos_embed = two_dimension_pos_embed(self.encoder_dim, self.pe_coordination,cls_token=not self.is_reconstruction)
 
         self.pos_embed.data.copy_(torch.from_numpy(pos_embed))
 
