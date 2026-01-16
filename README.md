@@ -15,4 +15,5 @@ The model consists of two main stages:
 
 # requirements
 Python version is 3.9, to install requirements:
+
 `pip install -r requirements.txt`
