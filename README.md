@@ -6,7 +6,7 @@ This repository provides the implementation of our paper on EEG-based fatigue de
 The figure above illustrates our proposed two-stage EEG-based fatigue detection framework. 
 The model consists of two main stages:
 
-1. **Joint Pre-training Stage**  
+1. **Joint Training Stage**  
    In this stage, the model is jointly trained with reconstruction and classification tasks, all parameters in the model are trainable.
 
 2. **Supervised Fine-tuning Stage**  
